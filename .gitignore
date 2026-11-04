@@ -1,0 +1,11 @@
+
+# Ignore Git directories and files
+.git/
+
+# Ignore compiled and test classes
+target/
+src/test/
+
+# Ignore random notes and such
+ignore/
+notes/
