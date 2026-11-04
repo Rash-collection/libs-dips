@@ -65,4 +65,24 @@ public final class Graphz {
         }
         return grid;
     }
+    public static BufferedImage resize(int neoWidth, int neoHeight, BufferedImage image){
+        if(neoWidth < 1 || neoHeight < 1 || image == null)
+            throw new IllegalArgumentException();
+        final var neoImage = new BufferedImage(neoWidth, neoHeight, BufferedImage.TYPE_INT_ARGB);
+        final var graph = neoImage.createGraphics();
+        graph.drawImage(image, 0, 0, neoWidth, neoHeight, null);
+        graph.dispose();
+        return neoImage;
+    }
+    public static BufferedImage scale(double scaler, BufferedImage image){
+        if(scaler <= 0 || image == null)
+            throw new IllegalArgumentException();
+        final int w = (int)Math.round(scaler * (double)image.getWidth());
+        final int h = (int)Math.round(scaler * (double)image.getHeight());
+        final var neoImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        final var graph = neoImage.createGraphics();
+        graph.drawImage(image, 0, 0, w, h, null);
+        graph.dispose();
+        return neoImage;
+    }
 }
