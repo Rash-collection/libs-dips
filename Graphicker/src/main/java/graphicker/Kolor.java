@@ -122,9 +122,9 @@ public final class Kolor{
         final int haf = Math.floorDivExact(tol, 2);
         final int odd = tol%2;
         final int ran = randoms().nextInt(val - haf, val + haf + odd);
-        return ran > LAS? LAS: ran;
+        return Math.clamp(ran, 0, LAS);
     }
-    public static int koloz(int val, int tol){return kolos(MAX - val, tol);}
+    public static int koloz(int val, int tol){return kolos(LAS - val, tol);}
     
     public static int random(){return getInt(kolor(), kolor(), kolor());}
     
