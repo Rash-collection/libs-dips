@@ -76,9 +76,10 @@ public final class Artsy {
         return neoImage;
     }
     public synchronized BufferedImage scale(double scale, int index){
-        if(scale <= 0 || scale == Double.NaN || index >= this.size() || index < 0)
+        if(scale <= 0 || !Double.isFinite(scale) || index >= this.size() || index < 0)
             throw new IllegalArgumentException();
         final var target = this.ARTS.get(index);
+        if(scale == 1)return target;
         final int width = (int)Math.round(scale * (double)target.getWidth());
         final int height = (int)Math.round(scale * (double)target.getHeight());
         if(width < 1 || height < 1)

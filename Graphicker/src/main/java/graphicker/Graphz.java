@@ -80,7 +80,8 @@ public final class Graphz {
         return neoImage;
     }
     public static BufferedImage scale(double scaler, BufferedImage image){
-        if(scaler <= 0 || scaler == Double.NaN || image == null)
+        if(scaler == 1D)return image;
+        if(scaler <= 0 || !Double.isFinite(scaler) || image == null)
             throw new IllegalArgumentException();
         final int width = (int)Math.round(scaler * (double)image.getWidth());
         final int height = (int)Math.round(scaler * (double)image.getHeight());
