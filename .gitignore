@@ -1,6 +1,7 @@
 
 # Ignore Git directories and files
 .git/
+.gitignore
 
 # Ignore compiled and test classes
 target/
