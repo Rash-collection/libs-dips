@@ -50,8 +50,7 @@ public final class Artsy {
     }
     public synchronized Artsy addArt(BufferedImage image){
         if(image == null)return this;
-        final int preSize = this.size();
-        final var resized = this.resize(this.w, this.h, preSize);
+        final var resized = Graphz.resize(this.w, this.h, image);
         this.ARTS.add(resized);
         return this;
     }
@@ -64,22 +63,35 @@ public final class Artsy {
     public synchronized BufferedImage resize(int neoW, int neoH, int index){
         if(neoW < 1 || neoH < 1 || index >= this.size() || index < 0)
             throw new IllegalArgumentException();
+        final var target = this.ARTS.get(index);
+        if(neoW == target.getWidth() && neoH == target.getHeight())
+            return target;
         final var neoImage = new BufferedImage(neoW, neoH, BufferedImage.TYPE_INT_ARGB);
         final var graph = neoImage.createGraphics();
-        graph.drawImage(this.ARTS.get(index), 0, 0, neoW, neoH, null);
-        graph.dispose();
+        try{
+            graph.drawImage(target, 0, 0, neoW, neoH, null);
+        }finally{
+            graph.dispose();
+        }
         return neoImage;
     }
     public synchronized BufferedImage scale(double scale, int index){
-        if(scale <= 0 || index >= this.size() || index < 0)
+        if(scale <= 0 || scale == Double.NaN || index >= this.size() || index < 0)
             throw new IllegalArgumentException();
         final var target = this.ARTS.get(index);
         final int width = (int)Math.round(scale * (double)target.getWidth());
         final int height = (int)Math.round(scale * (double)target.getHeight());
+        if(width < 1 || height < 1)
+            throw new UnsupportedOperationException();
+        if(width == target.getWidth() && height == target.getHeight())
+            return target;
         final var neoImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final var graph = neoImage.createGraphics();
-        graph.drawImage(target, 0, 0, width, height, null);
-        graph.dispose();
+        try{
+            graph.drawImage(target, 0, 0, width, height, null);
+        }finally{
+            graph.dispose();
+        }
         return neoImage;
     }
     public static Artsy factory(int width, int height){

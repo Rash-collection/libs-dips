@@ -68,21 +68,33 @@ public final class Graphz {
     public static BufferedImage resize(int neoWidth, int neoHeight, BufferedImage image){
         if(neoWidth < 1 || neoHeight < 1 || image == null)
             throw new IllegalArgumentException();
+        if(neoWidth == image.getWidth() && neoHeight == image.getHeight())
+            return image;
         final var neoImage = new BufferedImage(neoWidth, neoHeight, BufferedImage.TYPE_INT_ARGB);
         final var graph = neoImage.createGraphics();
-        graph.drawImage(image, 0, 0, neoWidth, neoHeight, null);
-        graph.dispose();
+        try{
+            graph.drawImage(image, 0, 0, neoWidth, neoHeight, null);
+        }finally{
+            graph.dispose();
+        }
         return neoImage;
     }
     public static BufferedImage scale(double scaler, BufferedImage image){
-        if(scaler <= 0 || image == null)
+        if(scaler <= 0 || scaler == Double.NaN || image == null)
             throw new IllegalArgumentException();
-        final int w = (int)Math.round(scaler * (double)image.getWidth());
-        final int h = (int)Math.round(scaler * (double)image.getHeight());
-        final var neoImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        final int width = (int)Math.round(scaler * (double)image.getWidth());
+        final int height = (int)Math.round(scaler * (double)image.getHeight());
+        if(width < 1 || height < 1)
+            throw new UnsupportedOperationException();
+        if(width == image.getWidth() && height == image.getHeight())
+            return image;
+        final var neoImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         final var graph = neoImage.createGraphics();
-        graph.drawImage(image, 0, 0, w, h, null);
-        graph.dispose();
+        try{
+            graph.drawImage(image, 0, 0, width, height, null);
+        }finally{
+            graph.dispose();
+        }
         return neoImage;
     }
 }
