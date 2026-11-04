@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public final class Artsy {
     private final ArrayList<BufferedImage> ARTS;
     private final int w, h;
-    private volatile int i = -1;
     private Artsy(int width, int height){
         ARTS = new ArrayList<>();
         this.w = width;
@@ -27,17 +26,11 @@ public final class Artsy {
     public synchronized int size(){
         return this.ARTS.size();
     }
-    public synchronized int getIndex(){
-        return this.i;
-    }
     public int getWidth(){
         return this.w;
     }
     public int getHeight(){
         return this.h;
-    }
-    public synchronized BufferedImage getImage(){
-        return this.ARTS.get(this.i);
     }
     public synchronized BufferedImage getImage(int index){
         return this.ARTS.get(index);
@@ -46,27 +39,21 @@ public final class Artsy {
         return this.ARTS.toArray(BufferedImage[]::new);
     }
     public synchronized Artsy addArt(Painter painter){
-        final int preSize = this.size();
         final var img = Graphz.toImage(this.w, this.h, painter);
-        if(img != null && this.ARTS.add(img))
-            this.i = preSize;
+        this.ARTS.add(img);
         return this;
     }
     public synchronized Artsy addArt(Pixelator pixelator){
-        final int preSize = this.size();
         final var img = Graphz.toImage(this.w, this.h, pixelator);
-        if(img != null && this.ARTS.add(img))
-            this.i = preSize;
+        this.ARTS.add(img);
         return this;
     }
-    public Artsy addArt(BufferedImage image){
+    public synchronized Artsy addArt(BufferedImage image){
         if(image == null)return this;
         final int preSize = this.size();
         final var resized = this.resize(this.w, this.h, preSize);
-        synchronized(this){
-            if(this.ARTS.add(resized))
-                this.i = preSize;
-        }return this;
+        this.ARTS.add(resized);
+        return this;
     }
     public synchronized BufferedImage remove(int index){
         return this.ARTS.remove(index);
@@ -79,7 +66,7 @@ public final class Artsy {
             throw new IllegalArgumentException();
         final var neoImage = new BufferedImage(neoW, neoH, BufferedImage.TYPE_INT_ARGB);
         final var graph = neoImage.createGraphics();
-        graph.drawImage(this.ARTS.get(index), 0, 0, this.w, this.h, null);
+        graph.drawImage(this.ARTS.get(index), 0, 0, neoW, neoH, null);
         graph.dispose();
         return neoImage;
     }
