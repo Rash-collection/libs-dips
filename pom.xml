@@ -19,5 +19,6 @@
         
         <!-- keep this at the end -->
         <module>dilib-bundle</module>
+        <module>monarch</module>
     </modules>
 </project>
